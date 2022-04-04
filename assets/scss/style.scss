@@ -1,0 +1,207 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
+
+body {
+  --size: 50px;
+  margin: 0;
+  padding: 0;
+  -ms-interpolation-mode: nearest-neighbor;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -o-pixelated;
+  image-rendering: pixelated;
+
+  background-color: rgba(0, 0, 0, 0.8);
+  font-family: "Open Sans", sans-serif;
+}
+
+input,
+textarea,
+button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 10px;
+}
+
+input {
+  font-family: "Open Sans", sans-serif;
+}
+
+textarea {
+  overflow: auto;
+  min-height: 300px;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  background-color: rgb(32, 106, 202);
+  color: white;
+  border: none;
+  border-radius: 100px;
+  overflow: visible;
+}
+
+* {
+  -webkit-user-drag: none;
+}
+
+.tile-container {
+  display: flex;
+  align-items: stretch;
+  height: 100vh;
+  width: 100vw;
+}
+
+.tilemap {
+  flex: 1;
+  overflow: scroll;
+  position: relative;
+}
+
+.sidebar {
+  color: white;
+  width: 300px;
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 1rem;
+  display: flex;
+  overflow: auto;
+  flex-direction: column;
+  *:not(:nth-last-child(1)) {
+    margin-bottom: 1rem;
+  }
+}
+h2 {
+  text-align: center;
+}
+
+.tileset {
+  background-image: url("../img/tiles/export/tile-background.png");
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  > * {
+    /* flex:1; */
+    width: 50px;
+    height: 50px;
+    margin: 0.5rem;
+    cursor: pointer;
+    transition: 0.25s ease;
+    transform: scale(1);
+    background-image: var(--tile);
+    background-size: contain;
+    background-repeat: no-repeat;
+    transform: rotate(calc(var(--tiles-rotation) * 90deg))
+      scale(var(--tiles-flip-x), var(--tiles-flip-y));
+
+    &:hover {
+      // --scale: 1.05;
+    }
+    &.is-active {
+      border-radius: 1px;
+      box-shadow: 0 0 0 4px white;
+      // --scale: 1.05;
+    }
+  }
+}
+
+.tilemap {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.tile-row {
+  display: flex;
+  align-items: center;
+
+  position: relative;
+  z-index: 2;
+}
+
+.tile-col {
+  flex: 1;
+  /* border:1px solid rgba(255,255,255, 1); */
+  box-shadow: 0 0 0 1px rgba(150, 150, 150, 0.1);
+  width: var(--size);
+  height: var(--size);
+  min-width: 30px;
+  min-height: 30px;
+  transform: scale(1);
+  transition: 0.25s ease;
+  cursor: pointer;
+
+  background-image: var(--tile);
+  transform: rotate(calc(var(--rotation) * 90deg));
+  background-position: center;
+  background-size: contain;
+
+  &:hover {
+    // transform: scale(1.05);
+  }
+}
+
+.tile-col > img {
+  width: 100%;
+  height: 100%;
+}
+
+// tiles
+.tiles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 1rem;
+  width: calc(var(--map-width) * var(--size));
+  height: calc(var(--map-height) * var(--size));
+  pointer-events: none;
+  background-size: calc(var(--size) * 2) calc(var(--size) * 2);
+  background-image: url("../img/tiles/export/tile-background.png");
+
+  > * {
+    // pointer-events: all;
+  }
+}
+
+.tile {
+  position: absolute;
+  --offset-x: 0;
+  --offset-y: 0;
+  --flip-x: 1;
+  --flip-y: 1;
+  top: calc((var(--y) + var(--offset-x)) * var(--size));
+  left: calc((var(--x) + var(--offset-y)) * var(--size));
+  width: calc(var(--width) * var(--size));
+  height: calc(var(--height) * var(--size));
+  background-image: var(--tile);
+  transform: rotate(calc(var(--rotation) * 90deg))
+    scale(var(--flip-x), var(--flip-y));
+  background-size: contain;
+  // background-size: calc(100% + 2px) calc(100% + 2px);
+  background-position: center;
+  background-repeat: no-repeat;
+
+  &.is-ghost {
+    opacity: 0.5;
+  }
+}
+
+.erase-mode {
+  #eraser {
+    background-color: green;
+  }
+
+  .tiles {
+    z-index: 10;
+    pointer-events: all;
+
+    .tile:hover {
+      opacity: 0.5;
+    }
+  }
+}

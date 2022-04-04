@@ -1,0 +1,23 @@
+{
+  "name": "map-viewer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "webpack.mix.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "sprites": "A:/games/SteamLibrary/steamapps/common/Aseprite/Aseprite.exe -b build/img/tiles/sprite.ase --save-as build/img/tiles/export/tile-{slice}.png"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "browser-sync": "^2.27.9",
+    "browser-sync-webpack-plugin": "^2.3.0",
+    "laravel-mix": "^6.0.43",
+    "resolve-url-loader": "^5.0.0",
+    "sass": "^1.49.9",
+    "sass-loader": "^12.1.0"
+  },
+  "dependencies": {
+    "fuse.js": "^6.5.3"
+  }
+}

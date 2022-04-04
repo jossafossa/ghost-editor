@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ghost Editor</title>
+  <link rel="stylesheet" href="./build/css/style.css">
+</head>
+<body>
+
+  
+
+  <div class="tile-container">
+
+    <div class="tilemap">
+      
+      <div class="tiles"></div>
+    </div>
+    <div class="sidebar">
+      <h2>Create new map</h2>
+      <input type="text" placeholder="width" type="number" id="amountX">
+      <input type="text" placeholder="height" type="number" id="amountY">
+      <button id="load">create</button>
+      <div class="tileset">
+        
+      </div>
+      <button id="eraser">Delete</button>
+      <button id="rotate">rotate</button>
+      <button id="flip-x">flip x</button>
+      <button id="flip-y">flip y</button>
+      <textarea name="" cols="30" rows="10" id="level">
+x y layer_int id
+x y layer_int id
+      </textarea>
+      <button type="text" id="import">import</button>
+    </div>
+  </div>
+  
+
+  <script src="./build/js/bundle.js"></script>
+</body>
+</html>
