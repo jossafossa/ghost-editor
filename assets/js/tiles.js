@@ -98,11 +98,19 @@ export default {
   14: {
     image: "tile-14.png",
     name: "tile-14",
-    width: 1,
+    width: 2,
     height: 1,
     layer: 3,
-    ids: [1],
+    ids: [1, null],
     disabled: true,
+  },
+  15: {
+    image: "tile-15.png",
+    name: "tile-15",
+    width: 2,
+    height: 2,
+    layer: 0,
+    ids: [1, 2,3,4],
   },
   99: {
     image: "tile-finish.png",

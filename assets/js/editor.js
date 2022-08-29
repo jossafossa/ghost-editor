@@ -9,12 +9,16 @@ export default class Editor {
     this.heightInput = document.querySelector("#amountY");
     this.tilemap = document.querySelector(".tilemap");
     this.rotateButton = document.querySelector("#rotate");
+    this.zoomInButton = document.querySelector("#zoom-in");
+    this.zoomOutButton = document.querySelector("#zoom-out");
     this.eraseButton = document.querySelector("#eraser");
+    this.dropButton = document.querySelector("#drop-tool");
     this.flipXButton = document.querySelector("#flip-x");
     this.flipYButton = document.querySelector("#flip-y");
     this.tilesRoot = document.querySelector(".tiles");
     this.tileset = document.querySelector(".tileset");
     this.importButton = document.querySelector("#import");
+    this.copyButton = document.querySelector("#copy");
     this.level = document.querySelector("#level");
     this.heroPathButton = document.querySelector("#create-hero-path-button");
     this.tilesObjects = tiles;
@@ -29,6 +33,7 @@ export default class Editor {
     this.ghost = null;
     this.width = 0;
     this.height = 0;
+    this.zoom = 3;
     
     this.imageFolder = "../img/tiles/export/";
 
@@ -67,9 +72,30 @@ export default class Editor {
       console.log(e);
       if (e.code === "KeyR" && e.shiftKey) this.rotate(true);
       if (e.code === "KeyR" && !e.shiftKey) this.rotate();
+      // if (e.code === "KeyE") this.toggleErase();
       if (e.key === "x") this.doFlipX();
       if (e.key === "y") this.doFlipY();
+      if (e.ctrlKey) {
+        this.eraseMode = true;
+        this.updateErase();
+      }
+      if (e.altKey) {
+        e.preventDefault();
+        this.dropMode = true;
+        this.updateDrop();
+      }
     })
+
+    document.addEventListener("keyup", e => {
+      if (!e.ctrlKey) {
+        this.eraseMode = false;
+        this.updateErase();
+      }
+      if (!e.altKey) {
+        this.dropMode = false;
+        this.updateDrop();
+      }
+    });
     
     // flip
     this.flipXButton.addEventListener("click", e => {
@@ -81,8 +107,13 @@ export default class Editor {
 
     // erase
     this.eraseButton.addEventListener("click", e => {
-      this.eraseMode = !this.eraseMode;
-      this.updateErase();
+      this.toggleErase()
+    })
+
+    
+    // eyedrop
+    this.dropButton.addEventListener("click", e => {
+      this.toggleDropTool()
     })
 
 
@@ -102,15 +133,80 @@ export default class Editor {
     document.addEventListener('dragstart',noDrag,true);
     
     this.updateTransform();
+
+
+    // handle zoom
+    this.zoomInButton.addEventListener("click", e => this.zoomIn());
+    this.zoomOutButton.addEventListener("click", e => this.zoomOut());
+    console.log(this.zoom);
     
+    console.log('zoom bitch');
+
+
+    //  update zoom
+    this.updateZoom();
+
+
+    // copy
+    let copyTimeout = false;
+    this.copyButton.addEventListener("click", e => {
+      clearTimeout(copyTimeout)
+      this.copyToClipboard(this.level.value);
+      this.copyButton.innerText = "Copied";
+      copyTimeout = setTimeout(e => {
+        this.copyButton.innerText = "Copy map";
+      }, 1000)
+    })
   }
+
+  copyToClipboard(value) {
+    let el = document.createElement("textarea");
+    el.value = valueEncoded;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand("copy");
+    document.body.removeChild(el);
+  }
+
+  zoomIn() {
+    console.log(this.zoom);
+    this.zoom += 1;
+    if (this.zoom > 10) this.zoom = 10;
+    this.updateZoom();
+  }
+
+  zoomOut() {
+    this.zoom -= 1;
+    if (this.zoom < 1) this.zoom = 1;
+    this.updateZoom();
+  }
+  
+  updateZoom() {
+    document.body.style.setProperty("--zoom", this.zoom);
+
+  }
+
+  toggleDropTool() {
+    this.dropMode = !this.dropMode;
+    this.updateDrop();
+  }
+
+  updateDrop() {
+    this.dropMode ? document.body.classList.add("drop-mode") : document.body.classList.remove("drop-mode")
+  }
+
+  toggleErase() {
+    this.eraseMode = !this.eraseMode;
+    this.updateErase();
+  }
+
 
   updateErase() {
     this.eraseMode ? document.body.classList.add("erase-mode") : document.body.classList.remove("erase-mode")
   }
 
   toEdser() {
-    console.log(JSON.stringify(this.tiles))
+    // console.log(JSON.stringify(this.tiles))
   }
 
   doFlipX() {
@@ -157,12 +253,17 @@ export default class Editor {
     this.placeActive = true;
     this.eraseMode = false;
     this.updateErase();
-    if (element.classList.contains("is-active")) this.placeActive = false;
-    this.tilesetTiles.forEach(e => e.classList.remove("is-active"))
-    if (this.placeActive) {
-      element.classList.add("is-active");
-    } else {
-      element.classList.remove("is-active");
+    if (element) {
+
+      if (element.classList.contains("is-active")) this.placeActive = false;
+      this.tilesetTiles.forEach(e => e.classList.remove("is-active"))
+      if (this.placeActive) {
+        element.classList.add("is-active");
+        document.body.classList.add("tile-active");
+      } else {
+        element.classList.remove("is-active");
+        document.body.classList.remove("tile-active");
+      }
     }
     this.activeTile = tileId;
   }
@@ -170,15 +271,24 @@ export default class Editor {
   export() {
     // filter finish
     let values = JSON.parse(JSON.stringify(this.tiles)); // deep copy
-    console.log(values);
+
+    let toSplice = [];
     for (let [tileId, tile] of Object.entries(values)) {
       let {x, y, rotation, flipX, flipY, layer, id} = tile;
       if (id == 99) {
         console.log(values[tileId]);
-        values.splice(tileId, 1);
-        values.push({x, y, rotation, flipX, flipY, layer: 0, id: 13});
-        values.push({x, y, rotation, flipX, flipY, layer: 3, id: 14});
+        toSplice.push(tileId);
       }
+    }
+
+    console.log(toSplice)
+    for (let tileId of toSplice.reverse()) {
+      values.splice(tileId, 1);     
+      let tile = this.tiles[tileId]; 
+      let {x, y, rotation, flipX, flipY, layer, id} = tile;
+
+      values.push({x, y, rotation, flipX, flipY, layer: 0, id: 13});
+      values.push({x, y, rotation, flipX, flipY, layer: 3, id: 14});
     }
 
 
@@ -306,18 +416,23 @@ this.level.value = value;
   }
 
   tryPlace(x, y, tileId, ghost = false) {
-    let tile = this.tilesObjects[tileId];
-    let [width, height] = this.rotatedDim(tile.width, tile.height, this.rotation);
-    if (x + width > this.width ) return false;
-    if (y + height > this.height ) return false;
-    let layer = "layer" in tile ? tile.layer : 0; 
-    
-    let overlapping = this.getOverlappingTiles(x, y, width, height, layer);
-    if (overlapping.length > 0) return false;
+    if (tileId) {
+
+      let tile = this.tilesObjects[tileId];
+      console.log(this.tilesObjects, tileId, tile);
+      let [width, height] = this.rotatedDim(tile.width, tile.height, this.rotation);
+      if (x + width > this.width ) return false;
+      if (y + height > this.height ) return false;
+      let layer = "layer" in tile ? tile.layer : 0; 
+      
+      let overlapping = this.getOverlappingTiles(x, y, width, height, layer);
+      if (overlapping.length > 0) return false;
 
 
-    if (!ghost) this.registerTile(x,y,this.rotation, this.flipX, this.flipY, layer, tileId);
-    return this.addTile(x, y, this.rotation, this.flipX, this.flipY, layer, tileId, ghost);
+      if (!ghost) this.registerTile(x,y,this.rotation, this.flipX, this.flipY, layer, tileId);
+      return this.addTile(x, y, this.rotation, this.flipX, this.flipY, layer, tileId, ghost);
+    }
+
   }
 
   getOverlappingTiles(x,y,w,h, layer) {
@@ -415,6 +530,7 @@ this.level.value = value;
 
     tileElement.addEventListener("click", e=> {
       if (this.eraseMode) this.removeTile(x, y, tileId);
+      if (this.dropMode) this.setActiveTile(false, id);
     })
 
     let offset = Math.abs((width - height) / 2);

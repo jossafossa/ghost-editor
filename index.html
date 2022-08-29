@@ -1,11 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-55297477-5"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-55297477-5');
+</script>
+
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ghost Editor</title>
   <link rel="stylesheet" href="./build/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 </head>
 <body>
 
@@ -13,27 +24,64 @@
 
   <div class="tile-container">
 
-    <div class="tilemap">
       
-      <div class="tiles"></div>
-    </div>
-    <div class="sidebar">
-      <h2>Create new map</h2>
-      <input type="text" placeholder="width" type="number" id="amountX">
-      <input type="text" placeholder="height" type="number" id="amountY">
-      <button id="load">create</button>
-      <div class="tileset">
-        
+    <div class="sidebar tileset-sidebar frame-border is-left">
+      <button class="sidebar-button icon-button"><i class="fa-solid fa-border-all"></i></button>
+      <div class="sidebar-inner">
+
+        <h1>Tiles</h1>
+
+        <div class="tileset">
+          
+        </div>
       </div>
-      <button id="eraser">Delete</button>
-      <button id="rotate">rotate</button>
-      <button id="flip-x">flip x</button>
-      <button id="flip-y">flip y</button>
-      <textarea name="" cols="30" rows="10" id="level">
-x y layer_int id
-x y layer_int id
-      </textarea>
-      <button type="text" id="import">import</button>
+    </div>
+    <div class="tilemap-container">
+      
+    <div class="menu-buttons">
+        
+      <button class="icon-button" id="zoom-in"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+      <button class="icon-button" id="zoom-out"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+      <button class="icon-button" id="eraser"><i class="fa-solid fa-eraser"></i></button>
+      <button class="icon-button" id="drop-tool"><i class="fa-solid fa-eye-dropper"></i></button>
+      <button class="icon-button" id="rotate"><i class="fa-solid fa-rotate"></i></button>
+      <button class="icon-button" id="flip-x"><i class="fa-solid fa-arrow-right-arrow-left"></i></button>
+      <button class="icon-button" id="flip-y"><i class="fa-solid fa-arrow-right-arrow-left  fa-rotate-90"></i></button>
+    </div>
+      <div class="tilemap">
+        <div class="tiles"></div>
+      </div>
+    </div>
+
+    <div class="sidebar frame-border">
+      <button class="sidebar-button icon-button"><i class="fa-solid fa-bars"></i></button>
+      <div class="sidebar-inner">
+
+        <h2>Shortcuts</h2>
+        <p>
+          Erase tiles with <b>CTRL+Click</b>. Clone tiles with </b>ALT+click</b>. Rotate tiles with <b>R</b> and <b>SHIFT+R</b>. Flip tiles with <b>X</b> and <b>Y</b>
+        </p>
+        
+        <h2>Create new map</h2>
+        <div class="input-container">
+          <div>
+            <label for="amountX">Width</label>
+            <input type="text" placeholder="width" type="number" id="amountX">
+          </div>
+          <div>
+            <label for="amountY">Height</label>
+            <input type="text" placeholder="height" type="number" id="amountY">
+          </div>
+        </div>
+        <button class="button" id="load">create</button>
+        <p>Once you're done with your map. Copy and paste this code into the game's custom level screen. You can also import maps you made here by pasting it in the textarea underneath. </p>
+        <textarea name="" cols="30" rows="10" id="level">
+  x y layer_int id
+  x y layer_int id
+        </textarea>
+        <button class="button" type="text" id="copy">Copy level</button>
+        <button class="button" type="text" id="import">import</button>
+      </div>
     </div>
   </div>
   

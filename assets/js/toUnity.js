@@ -89,11 +89,13 @@ function unity_transform_tilesprite(tilesprite, width, height, tile_ids, name) {
             relative_tile_pos = unity_rotate_tile(relative_tile_pos, tilesprite.rotation);
 
             let current_rot = tilesprite.rotation;
+            // Don't open, dead inside, keep going, don't look
             if (tilesprite.rotation % 2 == 1 && ((tilesprite.flipX && !tilesprite.flipY) || ((!tilesprite.flipX && tilesprite.flipY)))) current_rot = (current_rot + 2) % 4;
             relative_tile_pos[0] += anchor_point[0];
             relative_tile_pos[1] += anchor_point[1];
             let name_id;
-            if (height === 1 && width === 1) {
+            console.log(tile_ids.filter((e) => e != null), name);
+            if ((height === 1 && width === 1) || tile_ids.filter((e) => e != null).length == 1) {
                 name_id = `${name}`;
             } else {
                 name_id = `${name}_${tile_idx - 1 - nulls_seen}`;
